@@ -50,10 +50,39 @@ export default async function ProfilePage({
 
   if (!address) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <h1 className="text-2xl font-bold text-stone-900 mb-4">Worker Profile</h1>
-        <p className="text-stone-600 mb-6">Enter a wallet address to view a worker&apos;s on-chain reputation.</p>
+      <div className="max-w-2xl mx-auto py-12">
+        <h1 className="text-2xl font-bold text-stone-900 mb-2 text-center">Worker Profiles</h1>
+        <p className="text-stone-600 mb-6 text-center text-sm">Enter a wallet address or click a demo worker below.</p>
         <ProfileSearch />
+        <div className="mt-8">
+          <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-wider mb-3">Demo Workers</h2>
+          <div className="space-y-2">
+            {[
+              { address: '0x1234567890abcdef1234567890abcdef12345678', name: 'Marcus Johnson', tier: 2, cat: 'Electrical' },
+              { address: '0xabcdef1234567890abcdef1234567890abcdef12', name: 'Sarah Chen', tier: 1, cat: 'Web Dev' },
+              { address: '0x9876543210fedcba9876543210fedcba98765432', name: 'David Rivera', tier: 0, cat: 'Landscaping' },
+              { address: '0x1111222233334444555566667777888899990000', name: 'Keisha Williams', tier: 1, cat: 'Tutoring' },
+              { address: '0xaaaabbbbccccddddeeeeffff0000111122223333', name: 'Tommy Barker', tier: 1, cat: 'Painting' },
+            ].map(w => (
+              <Link
+                key={w.address}
+                href={`/profile?address=${w.address}`}
+                className="flex items-center justify-between p-3 border border-stone-200 rounded-lg hover:border-emerald-300 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
+                    {w.name[0]}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">{w.name}</div>
+                    <div className="text-xs text-stone-500">{w.cat}</div>
+                  </div>
+                </div>
+                <span className={getTierBadgeClasses(w.tier)}>T{w.tier}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# contracts (keep foundry artifacts out but include source)
+contracts-deploy/out/
+contracts-deploy/cache/
+contracts-deploy/broadcast/
+contracts-deploy/.env

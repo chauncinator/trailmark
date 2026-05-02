@@ -1,6 +1,11 @@
-const ZAI_API_KEY = process.env.ZAI_API_KEY || '';
-const ZAI_BASE_URL = process.env.ZAI_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4';
-export const MODEL = process.env.ZAI_MODEL || 'glm-4-flash';
+import Anthropic from '@anthropic-ai/sdk';
+
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+export const MODEL = 'claude-sonnet-4-20250514';
+
+const anthropic = new Anthropic({
+  apiKey: ANTHROPIC_API_KEY,
+});
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -25,41 +30,79 @@ export async function chatCompletion(
   content: string;
   toolCalls: { id: string; name: string; arguments: string }[] | null;
 }> {
-  const body: Record<string, unknown> = {
-    model: MODEL,
-    messages,
-    max_tokens: 1024,
-  };
+  // Separate system message from other messages (Anthropic pattern)
+  const systemMessage = messages.find(m => m.role === 'system');
+  const nonSystemMessages = messages.filter(m => m.role !== 'system');
 
-  if (tools && tools.length > 0) {
-    body.tools = tools;
-  }
+  // Convert messages to Anthropic format
+  const anthropicMessages = nonSystemMessages.map(msg => {
+    if (msg.role === 'tool') {
+      return {
+        role: 'user' as const,
+        content: [
+          {
+            type: 'tool_result' as const,
+            tool_use_id: msg.tool_call_id || '',
+            content: msg.content,
+          },
+        ],
+      };
+    }
 
-  const res = await fetch(`${ZAI_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${ZAI_API_KEY}`,
-    },
-    body: JSON.stringify(body),
+    if (msg.tool_calls && msg.tool_calls.length > 0) {
+      return {
+        role: 'assistant' as const,
+        content: [
+          ...(msg.content ? [{ type: 'text' as const, text: msg.content }] : []),
+          ...msg.tool_calls.map(tc => ({
+            type: 'tool_use' as const,
+            id: tc.id,
+            name: tc.function.name,
+            input: JSON.parse(tc.function.arguments),
+          })),
+        ],
+      };
+    }
+
+    return {
+      role: msg.role as 'user' | 'assistant',
+      content: msg.content,
+    };
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`GLM API error ${res.status}: ${text}`);
-  }
+  // Convert tools to Anthropic format
+  const anthropicTools = tools?.map(t => ({
+    name: t.function.name,
+    description: t.function.description,
+    input_schema: t.function.parameters,
+  }));
 
-  const data = await res.json();
-  const choice = data.choices?.[0]?.message;
+  const response = await anthropic.messages.create({
+    model: MODEL,
+    max_tokens: 2048,
+    system: systemMessage?.content,
+    messages: anthropicMessages,
+    tools: anthropicTools,
+  });
 
-  const content = choice?.content || '';
-  const toolCalls = choice?.tool_calls?.map(
-    (tc: { id: string; function: { name: string; arguments: string } }) => ({
-      id: tc.id,
-      name: tc.function.name,
-      arguments: tc.function.arguments,
-    }),
-  ) || null;
+  // Extract text content
+  const textBlock = response.content.find(block => block.type === 'text');
+  const content = textBlock && 'text' in textBlock ? textBlock.text : '';
+
+  // Extract tool calls
+  const toolUseBlocks = response.content.filter(block => block.type === 'tool_use');
+  const toolCalls = toolUseBlocks.length > 0
+    ? toolUseBlocks.map(block => {
+        if ('name' in block && 'input' in block && 'id' in block) {
+          return {
+            id: block.id,
+            name: block.name,
+            arguments: JSON.stringify(block.input),
+          };
+        }
+        return null;
+      }).filter((tc): tc is { id: string; name: string; arguments: string } => tc !== null)
+    : null;
 
   return { content, toolCalls };
 }

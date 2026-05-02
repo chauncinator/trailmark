@@ -2,7 +2,7 @@
 
 **A decentralized labor marketplace that gives Fort Worth workers portable, on-chain reputation and escrow-backed payment protection.**
 
-Built for the Trailmark Guild Hackathon
+Built for [HackFW](https://fwtx.devpost.com) — Fort Worth's convergent technology hackathon accelerating reindustrialization and American productivity.
 
 ---
 
@@ -17,6 +17,16 @@ Workers in traditional labor markets—tradespeople, gig workers, tutors, digita
 3. **Procurement barriers.** Fort Worth city contracts often include M/WBE (Minority/Women-Owned Business Enterprise) subcontracting requirements, but the RFPs are written in dense procurement language that filters out qualified workers who could do the work.
 
 **Trailmark Guild solves this** by putting reputation on-chain (workers own it, take it anywhere), backing every job with smart contract escrow (payment is guaranteed and transparent), and using AI agents to translate complex city RFPs into plain language and match workers to opportunities they'd otherwise miss.
+
+---
+
+## About HackFW
+
+This project was built for [HackFW](https://fwtx.devpost.com), Fort Worth's hackathon focused on convergent technology solutions that accelerate reindustrialization and American productivity. HackFW creates a sustainable innovation flywheel by exposing youth and workforce to hands-on technical product development, building a pipeline that keeps technical talent local while establishing Fort Worth as an emerging tech hub.
+
+Trailmark Guild addresses industrial problems in North Texas by building trust infrastructure for the skilled trades workforce—a critical bottleneck in regional manufacturing, construction, and infrastructure development.
+
+**Bounty List**: [https://dao.fwtx.city/bounties](https://dao.fwtx.city/bounties)
 
 ---
 
@@ -364,6 +374,27 @@ trailmark/
 
 ---
 
+## HackFW Submission
+
+This project fulfills the HackFW submission requirements:
+
+### ✅ GitHub Repository
+Complete source code with setup instructions, technical specifications, and deployment guide (see [Local Setup](#local-setup) section above)
+
+### ✅ Video Demonstration
+[Link to demo video] - Coming soon
+
+The video walks through:
+- The problem: Fort Worth workers losing reputation when switching platforms, payment risks, and procurement barriers
+- The solution: Portable on-chain reputation, smart contract escrow, and AI agents that translate city RFPs
+- Live demo: Worker onboarding, job marketplace, escrow payment flow, and AI agent interactions
+- Impact: How Trailmark reduces barriers for M/WBE participation in city contracts and keeps wealth in Fort Worth
+
+### Innovation Bounty Alignment
+This project addresses workforce development and economic inclusion challenges in Fort Worth's industrial sector, aligning with HackFW's mission to solve real problems in North Texas industry through convergent technology.
+
+---
+
 ## License
 
 MIT License - see LICENSE file for details
@@ -381,7 +412,8 @@ Love for Fort Worth, frustration with platform monopolies, and belief that worke
 ## Acknowledgments
 
 - Fort Worth's trades community for inspiration
+- [HackFW](https://fwtx.devpost.com) organizers for creating a platform that accelerates Fort Worth's tech ecosystem
 - Base for fast, cheap L2 infrastructure
 - Anthropic for Claude API that makes agents feel human
 - Supabase for Postgres that scales
-- The Trailmark Guild hackathon organizers for the deadline that shipped this
+- The Fort Worth innovation community for the deadline that shipped this
